@@ -1,4 +1,6 @@
- ###
+ ## Basic Types ##
+
+ ### Integer ###
 
   - Short, long 등의 자료형은 int와 별도의 자료형이 아니라, short int 혹은 long int의 축약형에 불과했다.
   - int자료형은 Byte 수를 지정하지 않고 있으며 최소한의 범위만을 지정하고 있다. <limits.h>에서 확인가능. -> C89 표준
