@@ -23,7 +23,7 @@
   - C표준에 따르면 char형은 기본적으로 Unsigned, signed로 정해지지 않는다.
   - getchar,putchar는 scanf,printf에 비해 구현이 단순하고, macro로 구현되어 있어서 추가적으로 속도에 이점이 있다. 
 
-##Type Conversion##
+### Type Conversion ###
 
   - 계산식에서 피연산자 간의 타입이 일치하지 않을 경우
   - 대입 시 타입이 불일치 할 경우
