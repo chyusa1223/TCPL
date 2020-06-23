@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+int main()
+{
+  printf("sizeof(int) : %zu",sizeof(int)); 
+  printf("sizeof(short) : %zu",sizeof(short)); 
+  printf("sizeof(long) : %zu",sizeof(long)); 
+  printf("sizeof(float) : %zu",sizeof(float)); 
+  printf("sizeof(double) : %zu",sizeof(double)); 
+  printf("sizeof(long double) : %zu",sizeof(long double)); 
+  return 0;
+}
