@@ -3,19 +3,14 @@
 int main()
 {
      char ch;
-     int total=0, count=0;
-     double average=0;
+     double total=0, count=1, average=0;
      printf("Enter a sentence: ");
-     getchar();
   
-     while((ch = getchar()) != '.') {
+     while((ch = getchar()) != '\n') {
 	  if(ch == ' ') count++;
-	  total++;
+	  else total++;
      }
      
-     average = (total-count+1)/(double)(count+1);
-     printf("total : %d\n",count);
-     printf("count : %d\n",total);
-     printf("Average : %.1lf\n",average);
+     printf("Average : %.1lf\n",total/count);
      return 0;
 }
