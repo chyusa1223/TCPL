@@ -96,18 +96,18 @@ int square(int n)
 
 ### Program Termination ###
 
-    - The value returned by main is a status code tha - in some operating system - can be tested when the program terminates. main should return 0 if the program terminates normally.
+   - The value returned by main is a status code tha - in some operating system - can be tested when the program terminates. main should return 0 if the program terminates normally.
 
 ### The Exit Function ###
 
-    - Executing a return statement in main is one way to terminate a program. Another is calling the exit function, which belongs to <stdlib.h>. The argument passed to exit has the same meaning as main's return value;
+   - Executing a return statement in main is one way to terminate a program. Another is calling the exit function, which belongs to <stdlib.h>. The argument passed to exit has the same meaning as main's return value;
 
 ### Q&A ###
 
-    - Some programming languages allow precedures and functions to be nested within each other. Does C allow function definitions to be nested?
+   - Some programming languages allow precedures and functions to be nested within each other. Does C allow function definitions to be nested?
 
-    > No. C does not premit the definition of one function to appear in the body of another. Among other thigs.
+   > No. C does not premit the definition of one function to appear in the body of another. Among other thigs.
 
-    - In the function call f(a,b), how does the compiller know whether the comma is punctuaion or whether it's an operator?
+   - In the function call f(a,b), how does the compiller know whether the comma is punctuaion or whether it's an operator?
 
-    > It turns out tha the arguments in a function call can't be arbitrary expressions. Instead, they must be "assignment expressions" which can't contain commas used as operators unless they're enclosed in parentheses. In other words. in the call F(a,b) the comma is punctuation; in the call F((a,b)) it's an oeprator.
+   > It turns out tha the arguments in a function call can't be arbitrary expressions. Instead, they must be "assignment expressions" which can't contain commas used as operators unless they're enclosed in parentheses. In other words. in the call F(a,b) the comma is punctuation; in the call F((a,b)) it's an oeprator.
