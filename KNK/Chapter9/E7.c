@@ -10,6 +10,4 @@ c) i = f(83,12); legal
 
 d) x = f(83,12); illegal -> legal ( 대입의 경우 변환 가능함.)
 
-e) f(83,12); legal
-
-
+e) f(83,12); leg
