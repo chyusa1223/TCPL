@@ -111,3 +111,9 @@ int square(int n)
    - In the function call f(a,b), how does the compiller know whether the comma is punctuaion or whether it's an operator?
 
    > It turns out tha the arguments in a function call can't be arbitrary expressions. Instead, they must be "assignment expressions" which can't contain commas used as operators unless they're enclosed in parentheses. In other words. in the call F(a,b) the comma is punctuation; in the call F((a,b)) it's an oeprator.
+
+
+   - Why can the first dimension in an array parameter be left unspecified, but not the other dimensions?
+   > 첫번째로, C에서 배열이 함수로 전달될 때 함수는 배열의 첫번째 원소의 pointer를 전달한다.
+     일차원 배열을 전달하는 경우를 생각해보자. a[i]를 계산하기 위해서는 주어진 시작 주소에서 배열의 원소의 사이즈만큼을 더해주면 a[i]의 주소로 접근이 가능하다. 따라서 우리가 길이 정보를 알 필요는 없다.
+     이번에는 이차원 배열을 생각해보자. a[i][j]를 계산하기 위해 우리는 시작주소에서 a의 열의 크기 * i를 곱한 만큼 더해준 후, a배열의 원소 크기의 * j를 한 값을 더해서 a[i][j]에 접근하게 될 것이다. 따라서 a[i][j]를 계산하기위해서는 i의 값을 알고 있어야만 하고 이것이 함수로 이차원 혹은 그 이상의 배열을 전달할시 제일 마지막을 제외한 나머지 숫자들을 기입해주어야 하는 이유이다.
