@@ -6,7 +6,7 @@
     
    - If the return type is omitted in C89, the functions is presumed to return a value type of int. but it is illegal in C99
 
-   - Variable declared in the body of a function belong exclusively to tha function.
+   - Variable declared in the body of a function belong exclusively to that function.
 
    - In C89, variable declarations must come first, before all statements in the body of a function. In C99, variable declarations and statements can be mixed.
 
