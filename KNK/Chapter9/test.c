@@ -1,17 +1,26 @@
 #include <stdio.h>
 
-int main(int argc, char *argv[])
+double median( double x, double y, double z)
 {
-  
-  double x = 3.0;
-  printf("Before cast : %d\n",square(x));
-  printf("After cast : %d\n",square((int)x));
-  
-  return 0;
+  return x>y?(x<z?x:(z>y?z:y)):(y<z?y:(z>x?z:x));
 }
 
-int square(int n)
+void pb(int n)
 {
-  printf("func : %d\n",n);
-  return n*n;
+  if(n!=0) {
+    pb(n/2);
+    putchar('0'+n%2);
+  }
+}
+
+int main(int argc, char *argv[])
+{
+
+  int N;
+  while(1) {
+    scanf(" %d",&N); 
+    if( N == 0) return 0;
+    pb(N);
+    printf("\n");
+  }
 }
