@@ -41,3 +41,7 @@
     - Usually, but not always. Consider a computer whose main memory is divided into words rather than bytes. A word might contain 36bits, 60bits, or some other numver of bits. Let's assume 36-bit words.
 
     - When memory is divided into words, each word has an address. An integer usually occupies one word, so a pointer to an integer can just be an address. However, a word can store more than one character. For example, a 36-bit word might store six 6-bit characters or fout 9-bit characters.
+	
+	- For this reason, a pointer to a character may need to be stored in a different form than other pointers. A pointer to a character might consist of an address( the word in which the character is stored) plus a small integer ( the position of the character within the word)
+	- On some computers, pointers may be "offsets" rather than complete addresses. For example, CPUs in the Intel x86 family can execute programs in several modes. The oldest of these, which dates back to the 8086 processor of 1978, is called real mode. In this mode, addresses are sometimes represented by a single 16-bit number and sometimes by two 16-bit numbers. An offset isn't a true memory address; the CPU must combine it with a segment value stored in a special register. To support real mode, older C compilers often provide two kinds of pointers: near pointers(16-bit offsets) and far pointer(32-bit segment: offset pairs). These compilers usually reserve the words near and far as nonstandard keywords that can be used to declare pointer variables
+
