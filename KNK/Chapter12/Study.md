@@ -1,5 +1,7 @@
 ## Pointers and Arrays ## 
 
+>[퀵정렬 증명 참조 ](http://www2.lawrence.edu/fast/GREGGJ/CMSC510/chapterSeven/correctness.html)
+
 ### Pointer Arithmetic ###
 
    - 포인터 p가 배열 a의 원소를 가리키고 있다고 할 때, 포인터 연산을 통해서 다른 원소에 접근이 가능하다. 
