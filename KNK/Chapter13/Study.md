@@ -150,6 +150,8 @@
 
    - char *planet[]과 같이 선언할 경우 char이차원 배열을 선언할 경우에 생기는 공간의 낭비를 없앤 string의 포인터를 가지는 배열을 선언 할 수 있다.
 
+   - 그러나 해당 배열을 char* 를 가지는 배열로 해당 문자열은 string literal로 수정이 불가하다.
+   
    - int main(int argc, char *argv[])
 
    - argc는 command argument의 개수를 나타내고, argv는 char[]에 대한 포인터들을 나타낸다.
