@@ -150,4 +150,21 @@
 
    - char *planet[]과 같이 선언할 경우 char이차원 배열을 선언할 경우에 생기는 공간의 낭비를 없앤 string의 포인터를 가지는 배열을 선언 할 수 있다.
 
-   - 
+   - int main(int argc, char *argv[])
+
+   - argc는 command argument의 개수를 나타내고, argv는 char[]에 대한 포인터들을 나타낸다.
+   - argv[argc]는 NULL로 표현되는, null pointer를 가지고 있다.
+
+   - argv[0]는 program의 이름을 가지고 있거나 만약 가용하지 않을 경우 빈 문자열을 가지고 있다. argv는 포인터의 배열이므로 해당 배열에 접근 하는 방법은 간단하다. 
+
+   - for(int i=0;i<argc;i++) printf("%s",argv[i]);
+
+   - char **p, for(p = &argv[1];*p != NULL;p++) printf("%s",*p);
+
+### Q&A
+
+   - String Literal이 수정이 불가한 이유는?
+
+   - 일부 컴파일러는 저장공간을 줄이기 위해 문자열을 한 번 저장한 후 같이 사용하도록 되어 있다.
+   - ex) char *p = "USE", char* q = "USE";
+   - 따라서 문자열이 수정될 경우 이는 이를 참조하는 다른 변수에도 영향을 끼칠 수 있다. 이와는 별개로 만약 read-only 메모리에 저장될 경우 이를 수정할려는 시도 예기치 못한 결과를 초래할 수 있다.
