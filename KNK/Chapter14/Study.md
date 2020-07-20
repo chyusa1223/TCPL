@@ -65,3 +65,139 @@
    - type이름을 바꾸어 사용하는 것도 가능하다. 
    
    - 조건부 컴파일에서도 매크로는 중요한 역할을 수행한다. 예를 들어, #define DEBUG와 같이 선언된 줄은 debugging mode에서만 컴파일 될 것이라는 점을 알려준다. 그리고 위의 예시에서 작성하였듯이 replacement list를 비워놓는 것 또한 가능하다. 
+
+### Parameterized Macros
+
+   - Parameterized macro의 형식은 다음과 같다.
+
+   - #define identifier( x1, x2, ... , xn) replacement-list
+
+   - 해당 메크로명과 괄호 사이에 공백이 존재해서는 안 된다. 만약 공백이 있을 경우 전처리기는 simple macro처럼 이를 해석하게 된다.
+
+   ex) #define MAX(x,y) ((x)>(y)?(x):(y))
+
+   - 파라미터가 존재하는 매크로의 경우 위와 같은 형태의 마주치게 되면, 이를 replacement-list와 이를 치환한다.
+
+   - parameterized macro의 경우에는 빈 파라미터와 함께 선언될 수 있다. 다음 예를 살펴보자.
+
+   - #define getchar() getc(stdin)
+
+   - 위 처럼 빈 파라미터를 가지는 매크로를 선언 할 수 있으나 활용도가 높지는 않다. 위 getchar()의 경우에는 실제 stdio.h에 구현되어 있는 getchar()와 동일한 형태이다.
+
+
+   - Advantages and disadvantages of parameterized macro
+
+   1. 프로그램의 속도가 약간 향상 될 수 있다. 함수를 호출할 때는 현재 실행하고 있던 코드에 관한 정보, 파라미터 복사등의 오버헤드가 존재한다. 그러나 매크로는 그러한 오버헤드가 존재하지 않는다. ( 참고 : C99에서는 위에서 언급한 오버헤드를 제거한 inline-function이 존재한다.)
+
+   2. 매크로는 일반적으로 사용이 가능하다. 함수는 해당 파라미터들의 타입을 명시하여야 하나, 매크로는 그러한 제한이 존재하지 않는다.
+
+   3. 컴파일 해야할 코드가 늘어날 수 있다. 특히 매크로가 중첩되어 있을 경우 더욱 코드가 길어질 수 있다.
+
+   4. 함수의 경우 해당 파라미터가 올바른 타입인지 컴파일러에 의해 체크되어 다를 경우 에러메세지로 이를 알려주나, 전처리기는 이러한 동작이 불가능하다.
+
+   5. 함수포인터는 가능하나, 포인터 매크로는 존재하지 않는다.
+
+   6. 매크로에 따라 자신의 인수가 여러 번 실행 될 수 있다. ex) MAX( i++, j); -> ((i++)>(j)?(i++):(j))
+
+   - 위와 같은 에러들은 상당히 찾기가 어려우며, 따라서 파라미터를 가지는 매크로를 사용할 때는 주의가 필요하다.
+
+   - 그러나 파라미터를 가지는 매크로의 경우에는 함수와 같은 형태를 만들기에 용이하다.
+
+### #, ## Operator
+
+   - #,## operator는 모두 전처리기에 의해 인식된다.
+   
+   - # operator는 매크로의 인자를 문자열로 바꾸어주는 역할을 하며, 파라미터를 가지는 매크로의 replacement-list에만 위치할 수 있다.
+
+   - ## operator는 두 토큰을 하나로 붙여주는 역할을 한다.
+
+   ex) #define MK_ID(n) i##n -> MK_ID(1) => i1 
+
+   - ## operator는 자주 사용되지는 않지만, 아래와 같은 경우에 유용하게 사용될 수 있다.
+
+   ex) #define GENERIC_MAX(type) \
+       type type##_max(type x, type y) \
+       {
+	  return x > y? x: y;
+       }
+
+   - 위와 같이 선언된 함수는 특정 타입만을 지원하는 함수와는 다르게 모든 타입에 대해서 사용될 수 있다.
+
+
+ ### 일반적인 매크로의 성질
+
+   - 매크로의 replacement-list에는 다른 메크로의 정의가 포함될 수 있다.
+
+   ex) #define PI 3.14 #define TWO_PI (2*PI)
+
+   - 위와 같이 선언된 경우, TWO_PI->2*PI->2*3.14 와 같이 모든 매크로 이름이 없어질 때 까지 replacement-list를 반복해서 살펴보고 치환한다.
+
+   - 전처리기는 매크로 이름이 identifier, character constant, string literal에 포함된 경우에는 치환하지 않는다.
+
+   - 매크로의 정의는 선언된 부분에서 파일의 끝까지 유효하다.
+
+   - 매크로는 이전과 똑같은 정의가 아닌 이상 여러차례 반복하여 선언될 수 없다.
+
+   - 매크로는 #undef를 이용해서 정의되었던 것을 해제할 수 있다. 만약 이전에 해당하는 정의가 없을 경우 무시된다.
+
+### Parentheses in Macro Definitions
+
+   1. 매크로의 replacement-list에 operator가 포함되어 있을 경우에는 반드시 괄호를 이용하여 이를 닫아준다.
+
+   2. 만약 매크로가 파라미터를 가질 경우, 이후 파라미터가 나올때마다 괄호를 이용하여 닫아준다.
+
+   3. 매크로를 사용하면서 괄호의 부족은 정말 찾기 어려운 에러를 생성할 수 있다.
+
+### Creating Longer Macros
+
+   ex) #define ECHO(s) (gets(s), puts(s))
+
+   - 위처럼 ,를 활용해서 매크로를 확장할 수 있지만 모든 매크로에 적용할 수 있는 사항은 아니다.
+
+   - 만약 statement를 작성해야할 경우에는 do loop 안에 이를 포함하는 방법이 존재한다.
+
+   ex) #define ECHO(s) \
+       	       do {    \
+	         gets(s);\
+		 puts(s);\
+	       } while(0)
+
+   - 위와 같이 선언된 매크로는 ECHO(s);와 같이 자연스럽게 사용이 가능하다. 
+
+### Predefined Macros
+
+   - C언어는 사전에 정의된 다양한 매크로 들을 가지고 있다.
+   
+   - __LINE__ => Line number of file being compiled
+
+   - __FILE__ => Name of file being compiled
+
+   - __DATE__ => Date of compilation ( in the form "Mmm dd yyyy")
+
+   - __TIME__ => TIme of compilation ( in the form "hh:mm:ss")
+
+   - __STDC__ => 1 if the compiler conforms to the C standard ( C89, C99)
+
+
+   < C99 >
+
+   - __LINE__ => Line number of file being compiled
+
+   - __FILE__ => Name of file being compiled
+
+   - __DATE__ => Date of compilation ( in the form "Mmm dd yyyy")
+
+   - __TIME__ => TIme of compilation ( in the form "hh:mm:ss")
+
+   - __STDC__ => 1 if the compiler conforms to the C standard ( C89, C99)
+
+
+### Conditional Compilation
+
+   -
+
+### Miscellaneous Directives
+
+   - #error message
+
+   - 위와 같이 적혀있을 경우 message를 포함한 에러메세지를 출력한다. #error은 조건부 컴파일과 함께 쓰여서 정상적인 실행 중에 발생해서는 안 되는 상황인 경우를 나타내는데 사용된다. 
