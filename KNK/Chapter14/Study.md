@@ -261,3 +261,57 @@
    - #line의 효과는 __LINE__, __FILE__을 바꾼다는 점이다. 사실 #line은 일반적으로 프로그래머에게는 잘 사용되지 않으나, c code를 결과값으로 하는 프로그램에서 주로 사용된다. 예를 들어 yacc와 같은 프로그램에서 사용된다. 사용자가 프로그램의 코드를 입력값으로 하여 yacc를 실행하면, yacc는 c program을 생성한다. 그 결과가 y.tab.c라고 하면 이 결과를 프로그래머가 컴파일 하게 된다. 결과로서, #line이 컴파일러로 하여금 코드가 원래 프로그래머가 작성한 파일에서 온것 처럼 만들어준다. 따라서 결과적으로, 디버깅이 용이해지며, 에러가 발생한 라인또한 프로그래머가 작성한 파일과 연관되어서 보여지게 된다. 
 
    - 참조 
+   - [yacc & lex](http://blog.naver.com/neraijel/110038010784)
+
+   - #Pragma
+
+   - pragma directive는 컴파일러에게 특정한 해동을 시킬 수 있는 방법을 제시한다.
+
+   - #pragma token 
+
+   - 위와 같이 사용하며 단순한 역할과 형태부터 복잡하고 정교한 것 까지 다양하게 사용할 수 있다. 그러나 C89에는 #pragma로 공통적으로 정의된 표준은 존재하지 않으며, 이는 컴파일러마다 지원하는 것이 다르다. 만약 인식할 수 없는 명령의 경우에는 무시한다. 
+
+   - 참고 : C99에서는 FP_CONTRACT, CX_LIMITED_RANGE, FENV_ACCESS의 표준에 의한 pragma를 지원한다.
+
+   - 참고 : the _Pragma Operator 
+
+   - C99에서는 _Pragma 연산자가 추가되었다. 이는 #pragma directive에 사용된다. _pragma( string-literal)의 형태를 마주치게 되면, 전처리기는 문자열 상수를 분해( destringizes)하고 쌍따옴표를 제거한다. 예를 보자.
+
+   ex) #pragma omp parallel for
+       #define OMP_PARALLEL_FOR #pragma omp parallel for // ERROR!!
+       #define OMP_PARALLEL_FOR _pragma("omp parallel for")
+
+   - 전처리기 지시자는 다른 지시자를 생성할 수 없기에 위의 두 번째 줄을 에러가 발생한다. 그러나 _pragma는 operator이므로 위와 같은 사용이 가능하게 된다.
+
+
+### Q&A
+
+   - 어떤것을 매크로로 정의해야 하는가?
+   - 모든 숫자로 된 상수, 문자열 상수인데 2번 이상 사용되며 추후에 바뀔 가능성이 있는 것.
+
+   - #이 ",\이 포함된 경우 어떻게 stringize하는가?
+   - ex) #define STRINGIZE(x) #x // STRINGIZE("foo") -> "\"foo\"\"
+
+   - #define CONCAT(x,y) x##y // CONCAT(a,CONCAT(b,c)) 정상적으로 동작하지 않는다.
+   - #,##이 사용된 경우에 매크로는 확장되지 않는다. 즉 CONCAT(a,CONCAT(b,c))는 aCONCAT(b,c)로만 확장된다. 이를 위해서는 다소 번거롭더라도 #define CONCAT2(x,y) CONCAT(x,y)와 같은 정의가 필요하다. CONCAT2(a,CONCAT2(b,c)에는 ##이 포함되어 있지 않으므로 abc로 정상적으로 확장된다. 위와 같은 동작은 #에서도 동일하다.
+
+   - 만약 전처리가 이미 선언된 매크로를 다시 스캔하는 경우에 확인하면 이는 무한 루프로 이어지는가?
+   - 아주 오래된 전처리기의 경우에는 그러한 가능성이 존재한다. 그러나 최근에 사용가능한 전처리기에서는 대부분이 그러한 방식으로 동작하지 않는다. C표준에 따르면 원래 선언된 매크로가 다시 재스캔중에 나오는 이는 더이상 확장되지 않는다. 
+
+   - 위와 같은 점을 이용할 수도 있다. 아래의 예를 살펴보자.
+   ex) #undef sqrt
+       #define sqrt(x) ((x)>=0?sqrt(x):0)
+
+   - 위와 같이 선언되 매크로의 경우 모든 sqrt함수를 위와 같은 형태로 바꾸나 한 번 치환된 이후에는 위의 원칙에 의해 다시 치환되지 않는다. 표준 라이브러리는 함수명과 매크로가 같은 이름을 갖는 것을 허용하고 있다. 따라서 sqrt의 정의를 해제한 이유는 만약 라이브러리에 이미 sqrt가 정의되어 있는 경우를 상정한 방어적인 프로그래밍이다.
+
+   - freestanding implementation과 hosted implementation의 의미는?
+   - hosted implementation의 경우에는 OS위에서 돌아가는 일반적인 대부분의 프로그램에 해당된다. freestanding program의 경우에는 운영체제가 없거나, 있더라도 매우 최소한의 역할 만을 하는 운영체제 위에서 실행되는 프로그램에 해당한다. 예를 들어 운영체제의 커널, 임베디드 시스템을 작성하는데 사용된다. 당연히 전통적인 의미의 input/output이 필요하지 않으므로 stdio.h가 포함될 필요가 없다. 
+
+   - preprocessor가 상수표현을 계산할 수 있는 이유는?
+   - 전처리기는 우리가 생각하는 것 보다 복잡하과 정교하게 구성되어 있으며, C언어에 대해서도 알고 있다. 물론 컴파일러와 같은 방식으로 동작하지는 않는다. 실제적으로, 전처리기의 상수 표현은 상수, 상수를 표현한 매크로, defined operator의 활용이다.
+
+   - #ifdef, #ifndef가 있는 이유 (defined 가 있음에도)
+   - #ifdef, #ifndef는 1970년대 부터 C언어에 포함되어 있었다. 이후 1980년대에 defined operator가 추가되었다. 그러면, defined는 왜 추가된 것일까? ex) #if defined(FOO) && defined(BAR) && !defined(BAZ)와 같이 여러개의 매크로를 동시에 확인할 수 있고 유연성이 향상된다.
+
+   - #if 0 // lines // #endif 사이 line에 완성되지 못한 코드가 있으나 에러가 발생한다. 그 이유는?
+   - 이는 line이 완전히 무시되지 않기 때문이다. 주석은 전처리기의 지시자가 실행되기 전에 처리되며 소스코드는 전처기에 의해 토큰으로 나뉜다. 위 과정에서 종료되지 않은 주석 및 코드는 에러메세지를 발생하게 할 수 있다. 마찬가지로 마무리되지 않은 따옴표또한 마찬가지이다. 이러한 코드는 undefined behavior를 발생시킬 수 있다. 
