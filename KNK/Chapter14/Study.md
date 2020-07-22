@@ -181,23 +181,83 @@
 
    < C99 >
 
-   - __LINE__ => Line number of file being compiled
+   - __STDC__HOSTED__ => 1 if this is a hosted implementation; 0 if it is freestanding
+   
+   - __STDC__VERSION__ => Version of C standard supported 
 
-   - __FILE__ => Name of file being compiled
+   - __STDC__IEC__559__ => 1 if IEC 60559 floating-point arithmetic is supported 
 
-   - __DATE__ => Date of compilation ( in the form "Mmm dd yyyy")
+   - __STDC__IEC__559_COMPLEX =>  1 if IEC 60559 complex arithmetic is supported 
 
-   - __TIME__ => TIme of compilation ( in the form "hh:mm:ss")
+   - __STDC__ISO__10646 => yyyymmL if wchar_t values match the ISO 10646 standard of the specified year and month 
 
-   - __STDC__ => 1 if the compiler conforms to the C standard ( C89, C99)
+   - Empty Macro Arguments
+   - C99에서는 매크로를 사용할 때 빈 파라미터를 넣는 것을 허용하고 있다. ##로 선언된 매크로에서 파라미터가 비어있을 경우에는 placemaker로 대체되면 이는 값이 있는 파라미터와 결합하면 사라진다. 
+
+   - Macros with a Variable Number of Arguments
+   - C99에서 매크로는 무제한의 파라미터를 가질 수 있다. 이러한 특성은 가변 가능한 숫자를 받는 함수에 인자를 전달할 때 유용하게 사용될 수 있다. ex) printf, scanf
+
+   - ex) #define TEST( condition, ...)
+
+   - 위 ...을 ellipsis라 칭한다. ellipsis는 항상 파라미터 선언의 마지막에 위치하여야 한다. 후에 ellipsis에 대응되는 파라미터를 사용하기 위해서는 __VA_ARGS__를 사용한다. 
+
+   - ellipsis에 대응되는 파라미터 조차도 생략될 수 있다. 
+
+   - __func__ Identifier
+
+   - 위 __func__는 전처리기와는 관계가 없다. 모든 함수는 __func__에 접근할 권한을 가지고 있다. __func__는 함수 안에 static cosnt char __func__ = "function_name"와 같이 선언된 변수처럼 동작한다. 특정 함수가 어디서 실행되었거나, 종료하였는지, 호출한 함수가 어디인지 추적할 때 유용하다. 
 
 
 ### Conditional Compilation
 
-   -
+   - #if, #endif
+
+   ex) #if DEBUG
+       printf("Value of i: %d\n", i);
+       printf("Value of j: %d\n", j);
+       #endif 
+
+   - 위와 같이 작성되어있는 경우에 전처리기가 처리하는 과정에서 #if는 DEBUG의 값을 확인한다. 만약 값이 0이 아니라면 #if, #endif구문 만을 없애서 printf구문은 그대로 남겨두게 된다. 만약 DEBUG의 값이 0이라면 #if부터 #endif까지의 모든 내용을 제거한다.  
+
+   - 만약, 아예 선언되지 않은 매크로라면, 전처리기는 이를 0으로 취급한다. 
+
+   - #defined
+   - 선언되어 있을경우 1을 리턴하고, 아닌 경우 0을 리턴한다.
+
+   - #ifdef == defined(identitifier) , #ifndef == #if !defined(identitifier)
+
+   - #if expr1
+     line1
+
+     #elif expr2
+     line2
+
+     #else
+     line3
+     #endif
+
+   - #elif, #else는 위와 같이 사용하며, #ifdef, #ifndef또한 동일하게 사용이 가능하다.
+   
+   - 조건부 컴파일의 장점
+
+   1. 다른 운영체제 혹은 기계에 적용될 때 이식성 확보에 용이하다.  
+
+   2. 다른 컴파일러에 의해 컴파일되는 프로그램을 작성할 때도 유용하게 사용할 수 있다. 
+
+   3. 선언되어 있지 않은 매크로를 선언 할 수 있다.
+
+   4. 주석을 포함하는 코드를 일시적으로 사용하지 않을 수 있다. 
 
 ### Miscellaneous Directives
 
    - #error message
 
    - 위와 같이 적혀있을 경우 message를 포함한 에러메세지를 출력한다. #error은 조건부 컴파일과 함께 쓰여서 정상적인 실행 중에 발생해서는 안 되는 상황인 경우를 나타내는데 사용된다. 
+
+   - #line n, #line n "file"
+
+   - #line은 프로그램의 라인의 숫자가 매겨지는 방식을 바꿔준다. 2번째 형태와 같이 파일이 명시된 경우에는 "file"의 n번째 줄에서 부터 시작된 것으로 인식한다.
+
+   - #line의 효과는 __LINE__, __FILE__을 바꾼다는 점이다. 사실 #line은 일반적으로 프로그래머에게는 잘 사용되지 않으나, c code를 결과값으로 하는 프로그램에서 주로 사용된다. 예를 들어 yacc와 같은 프로그램에서 사용된다. 사용자가 프로그램의 코드를 입력값으로 하여 yacc를 실행하면, yacc는 c program을 생성한다. 그 결과가 y.tab.c라고 하면 이 결과를 프로그래머가 컴파일 하게 된다. 결과로서, #line이 컴파일러로 하여금 코드가 원래 프로그래머가 작성한 파일에서 온것 처럼 만들어준다. 따라서 결과적으로, 디버깅이 용이해지며, 에러가 발생한 라인또한 프로그래머가 작성한 파일과 연관되어서 보여지게 된다. 
+
+   - 참조 
