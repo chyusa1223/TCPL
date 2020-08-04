@@ -22,8 +22,7 @@ int main(void) {
 	  break;
 	case '/': op2 = pop();
 	  op1 = pop();
-	  push(op1 / op2);
-	  break;
+	  push(op1 / op2);	  break;
 	case '=': printf("Value of expression: %d\n", pop());
 	  break;
 	case ' ': break;

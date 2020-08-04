@@ -122,36 +122,137 @@
 
    - 오버헤드를 제외하더라도, 구조체의 복사를 피하는 것은 이유가 있다. 예를 들어 <stdio.h>에서는 FILE 구조체가 존재하여 프로그램내에서 유일하게 사용된다. stdio.h에 모든 함수에서는 FILE 구조체포인터를 인자로 하고 결과값을 FILE에 대한 구조체 포인터를 리턴한다. 
 
-## 16.1 Structure Variable
+   - 이러한 오버헤드를 피하기 위해 대부분의 구조체의 포인터를 인자로서 넘기게 된다. 
 
-###
-   - 만약에 designator가 없을 경우에는 이전에 designator가 명시된 멤버의 다음 멤버에 대입된다. 
-###
+   - C99의 Compound Literal또한 구조체의 전달에도 사용될 수 있다. 
 
-   - 만약에 designator가 없을 경우에는 이전에 designator가 명시된 멤버의 다음 멤버에 대입된다. 
-###
+   ex) print_part( (struct part) {528, "Disk drvie", 10}); 
 
-   - 만약에 designator가 없을 경우에는 이전에 designator가 명시된 멤버의 다음 멤버에 대입된다. 
-###
 
-   - 만약에 designator가 없을 경우에는 이전에 designator가 명시된 멤버의 다음 멤버에 대입된다. 
-###
+## 16.3 Nested Arrays and Structures 
 
-   - 만약에 designator가 없을 경우에는 이전에 designator가 명시된 멤버의 다음 멤버에 대입된다. 
+   - 구조체를 원소로 하는 배열이나 구조체 안에 다른 구조체를 포함하는 것 또한 가능하다.
+   
+   ex) struct student {
+       struct person_name name;
+       int id, age;
+       char sex;
+       } student1, student2;
 
-## 16.1 Structure Variable
+## 16.4 Unions
 
-###
-   - 만약에 designator가 없을 경우에는 이전에 designator가 명시된 멤버의 다음 멤버에 대입된다. 
-###
+   - Union은 구조체와 매우 유사하다. 하지만 컴파일러는 Union내의 가장 큰 멤버의 크기만큼만 공간을 할당한다. 
 
-   - 만약에 designator가 없을 경우에는 이전에 designator가 명시된 멤버의 다음 멤버에 대입된다. 
-###
+   - Union의 이러한 구조 때문에 멤버중 하나의 값을 대입하게 되면 나머지 값들은 전부 변하게 되고, 의미가 없어진다. 그 외의 다른 특징들은 구조체와 매우 유사하다. 
 
-   - 만약에 designator가 없을 경우에는 이전에 designator가 명시된 멤버의 다음 멤버에 대입된다. 
-###
+   - 다만, 초기화 진행시에 Union에서는 첫 멤버에게만 초기화할 값을 줄 수 있다. designated initializer또한 사용이 가능하다. 마찬가지로 한 멤버에게만 값을 명시할 수 있다. 
+   
+### Union을 사용하는 이유
 
-   - 만약에 designator가 없을 경우에는 이전에 designator가 명시된 멤버의 다음 멤버에 대입된다. 
-###
+    - Union을 공간을 절약하기 위해 아래와 같이 사용하기도 한다. 
+    
+    struct catalog_item {
+       int stock_number;
+       double price;
+       int item_type;
+       char title[TITLE_LEN+1];
+       char author[AUTHOR_LEN+1];
+       int num_pages;
+       char design[DESIGN_LEN+1];
+       int colors;
+       int sizes;
+     };
+     
+     struct catalog_item{
+       int stock_number;
+       double price;
+       int item_type;
+       union {
+       	 struct {
+	    char title[TITLE_LEN+1];
+	    char author[AUTHOR_LEN+1];
+	    int num_pages;
+	 } book;
+       	 struct {
+       	    char design[DESIGN_LEN+1];
+	 } mug;
+       	 struct {
+       	    char design[DESIGN_LEN+1];
+	    int colors;
+	    int sizes;
+	 } item;
 
-   - 만약에 designator가 없을 경우에는 이전에 designator가 명시된 멤버의 다음 멤버에 대입된다. 
+   - 한가지 재미있는 특징이 존재한다. 우선 일반적으로 Union의 한 멤버에 값을 저장하고 다른 멤버를 통해 값을 접근하는것은 정의되지 않은 행동이다. 
+
+   - 그러나 Union내의 두 멤버가 구조체이고 첫번째 멤버가 같은 경우라면 ( 멤버의 순서가 같아야하고 구조체가 Compatible해야 한다) 이러한 경우에만, 다른 멤버를 통해서 접근하는 것이 가능하다. 
+
+   - strcpy( c.item.mug.design, "Cats");
+     printf("%s", c.item.shirt.design); == "Cats"
+     
+   - 이외에도 다른 데이터 타입을 가지는 자료구조를 만들 수 있다. 
+
+   typedef union {
+      int i;
+      double d;
+   } Number; 
+   
+   Number number_array[1000];
+   
+   - 그러나 Union의 사용에는 결정적인 문제점이 존재하는데, 이는 바로 마지막에 대입된 멤버가 어떤 것인지 알 수가 없다는 점이다. 
+
+   - 따라서 이러한 경우를 위하여 아래와 같이 tag를 포함할 수 있다.
+   
+   typedef struct {
+      int kind;
+      union {
+         int i;
+	 double d;
+      }u;
+   }number; 
+
+## 16.5 Enumerations
+
+   - C에서는 몇가지 값만을 가질 수 있는 변수의 타입이 존재하며 이것이 enum이다. 
+
+   ex) enum {CLUBS, DIAMONDS, HEARTS, SPADES } s1,s2
+   
+   - 구조제와 Union과는 다르게 enum의 경우에는 enum constant의 명칭은 다른 이름들과는 달라야 한다. 
+
+   ex) enum suit {CLUBS, DIAMONDS, HEARTS, SPADES }; 
+       enum suit s1,s2;
+
+   ex) typedef enum {CLUBS, DIAMONDS, HEARTS, SPADES } Suit;
+       Suit s1,s2;
+
+   - C에서는 enum 타입에 대해서 enumeration variable과 constant를 모두 integer로 취급한다. 
+   
+   - 개발자는 enum에 어떠한 값들이 대응될 지 지정할 수 있다.
+
+   ex) enum suit {CLUBS=1, DIAMONDS=2, HEARTS, SPADES }; 
+   
+   - 만약 위처럼 값이 지정되지 않은 경우에는, 이전 Constant의 값에 1더한 값이 자동으로 지정된다. 
+   
+
+## Q&A
+
+### 구조체의 크기가 멤버의 크기를 모두 더한 것 보다 큰 이유는?
+
+   - 일부 컴퓨터에서는 특정 데이터 타입의 주소가 2,4,8등의 배수에만 지정이 가능하다. 따라서 이러한 사항을 만족하기 위해 compiler에는 구조체의 멤버사이에 빈 공간이 위치한다. 
+   
+### 구조체 내의 빈 공간이 구조체의 시작위치에도 올 수 있나요?
+
+   - 이는 불가하다. C의 표준에 따르면 구조체의 빈 공간은 구조체 멤버 사이혹은 마지막 멤버 이후에만 존재할 수 있다.  
+
+### C에서 구조체간의 == 비교연산이 불가한 이유는?
+
+   - 왜냐하면 해당 연산이 C 언어의 철학에 어긋나기 때문이다. 첫 번째로는 구조체의 멤버를 1:1로 비교하는 연산자체가 너무나도 비효율적이기 때문이다. 구조체의 각 byte를 일대일로 비교하는것은 보다 효율적인 연산이 가능하나, 이는 위에서 설명한 빈 공간 때문에 불가하다. 빈 공간에는 임의의 데이터가 들어있으므로 각 멤버의 값은 같아도 다른 결과가 나올 수 있다. 이러한 문제는 컴파일러에서 구조체의 빈 공간에 0 또는 특정한 값을 대입합으로서 해결이 가능하나, 이는 구조체를 활용하는 프로그램에 성능저하를 가져 올 수 있다. 
+   
+### C에서 tag와 typedef 두 가지 방법을 지원하는 이유는?
+
+   - C에서 원래는 typedef가 존재하지 않았고, typedef가 생긴 이후로는 tag방식을 제거하기에는 이미 너무 많은 시간이 흘렀다. 이를 제외하고도 tag방식은 구조체의 멤버가 같은 타입을 가리킬때 필요하다. 
+
+### part라는 구조체의 선언을 다른 두 파일에 포함시켰을 때, 각각의 파일에 포함된 두 변수가 서로 같은 타입이 될 지?
+
+   - 결론부터 말하자면 그렇지 않다. 그러나 C표준에서는 두 변수가 같은 타입이라고 얘기하고 있다. 이는 타입자체가 compatible한 것과 완전히 같은 것의 차이가 있다. C89에서는 다른 파일에 선언된 구조체의 경우 멤버가 같은 이름을 가지고 같은 순서로 배치되어 있을 경우 Compatible하다고 판단한다. 그러나 C99에서는 위의 조건을 모두 포함하고 같은 tag를 가지거나 둘 다 태그가 존재하지 않아야 compatible하다. 
+
+   
