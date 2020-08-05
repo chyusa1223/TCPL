@@ -149,4 +149,35 @@
 		 return 0;
 	}
 	
-### 10
+### 11
+
+    20 bytes
+
+### 12 
+
+    28 bytes
+
+### 13
+    
+    a,b,d
+
+### 14
+
+    a)
+
+    double compute_area( struct shape s) {
+    	   if( s.shape_kind == RECTANGLE) {
+	       return height*width;
+	   }
+	   else {
+	   	return PI*radius*radius
+	   }
+    }
+
+### 16
+
+    a), c), e)
+
+### 17
+
+    all legal but b,c may be unsafe
