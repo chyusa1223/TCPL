@@ -254,3 +254,81 @@
 	return list;
      }
 
+## 17.6 Pointers to Pointers
+
+  void add_to_list(struct node **list, int N)
+  {
+	struct node *new_node;
+
+	new_node = malloc(sizeof(struct node));
+	if( new_node == NULL) {
+	    printf("Error : malloc failed in add_to_list\n");
+	    exit(EXIT_FAILURE);
+	}
+	new_node -> value = n;
+	new_node -> next = *list;
+	*list = new_node;
+   }
+
+
+## 17.7 Pointers to Functions
+
+  - c에서는 포인터가 반드시 데이터만을 가리키지는 않는다. 모든 함수는 반드시 메모리의 위치를 가지고 있으므로 함수 또한 이를 가리키는 포인터가 있을 수 있다.
+
+### Function Pointers as Arguments
+
+  - C언어에서 함수 포인터를 인자로 넘겨주는 것은 흔하게 발견된다.  
+
+  double integrate (double (*f) (double), double a, double b)
+  double integrate (double (f) (double), double a, double b)
+
+  - 함수포인터를 인자로 가지는 함수의 prototype은 위와 같다. 함수포인터를 인자로 가질 때는 asterik를 생략해도 무방하며 컴파일러는 이를 같은 함수로 취급한다. 만약 함수명이 괄호가 없이 사용될 때, C 컴파일러는 이를 함수포인터로 취급한다.
+
+  y = (*f)(x)
+  - 인자로 전달된 함수포인터의 경우 위처럼 사용할 수 있다. (*f) 좌측과 같이 asterik를 포함하지 않고 f(x)와 같이 호출하여도 동일하다.
+
+  - 이러한 함수포인터의 사용이 일반적인 프로그래머와 별로 상관이 없다고 느낄 수 있겠지만, 실제로는 그렇지 않다. 예를 들면, <stdlib>안에 존재하는 qsort함수의 경우 두 인자 중 어떠한 것이 더 큰지 작은지를 비교하는 함수에 대한 포인터를 인자로 받는다.
+
+  void qsort( void *base, size_t nmemb, size_t size, int (*compare)(const void*, const void *))
+
+  - 비교 함수 예시
+
+  int compare_parts( const void *p, const void *q)
+  {
+	const struct part *p1 = p;
+	const struct part *q1 = q;
+
+	if( p1 -> number < q1 -> number)
+	    return 1;
+	else if (p1-> number == q1->number)
+	    return 0;
+	else
+	    return 1;
+  }
+
+  int compare_parts( const void *p, const void *q)
+  {
+	return ((struct part *) p) ->number - ((struct part * ) q)->number;
+  }
+
+### Other Uses of Function Pointers
+
+  - 함수의 인자로서 사용되는 함수 포인터의 장점을 설명했지만, 함수포인터는 다른 용도로도 다양하게 사용될 수 있다. C언어에서는 함수포인터 자체를 다른 포인터와 동일하게 취급한다. 따라서 개발자는 이를 배열, 구조체등에 다양하게 사용할 수 있다.
+
+  void (*pf)(int);
+
+  - pf = f;와 같이 int parameter를 가지고 리턴 타입이 void인 함수라면 어떠한 함수이든 pf에 대입하여 사용할 수 있다.  
+
+### 17.8 Restricted Pointers
+
+   -  
+
+### 17.9 Flexbile Array Members (C99) 
+
+   - 
+
+ 
+  
+  
+
+  
